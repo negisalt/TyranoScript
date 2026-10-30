@@ -17,8 +17,7 @@
 
 ;文字が表示される領域を調整
 [position layer=message0 page=fore margint="45" marginl="50" marginr="70" marginb="60"]
-
-
+;
 ;メッセージウィンドウの表示
 @layopt layer=message0 visible=true
 
@@ -37,14 +36,29 @@
 [chara_face name="akane" face="happy" storage="chara/akane/happy.png"]
 [chara_face name="akane" face="sad" storage="chara/akane/sad.png"]
 
-;hiroin_すてあ
+;hiroin_　すてあ
+[chara_new name="sutea" storage="chara/sutea/normal.png" jname="すてあ"]
+[chara_face name="sutea" face="angry" storage="chara/sutea/angry.png"]
+[chara_face name="sutea" face="fukigen" storage="chara/sutea/fukigen.png"]
+[chara_face name="sutea" face="niko" storage="chara/sutea/niko.png"]
+[chara_face name="sutea" face="odoroki" storage="chara/sutea/odoroki.png"]
+[chara_face name="sutea" face="question" storage="chara/sutea/question.png"]
+[chara_face name="sutea" face="sad" storage="chara/sutea/sad.png"]
+[chara_face name="sutea" face="yobi" storage="chara/sutea/yobi.png"]
+[chara_face name="sutea" face="still_1_1" storage="chara/sutea/still_1_1.png"]
+[chara_face name="sutea" face="still_1_2" storage="chara/sutea/still_1_2.png"]
 
-;sub_みやの
+;sub_　みやの
+[chara_new name="miyano" storage="chara/miyano/normal.png" jname="みやの"]
+[chara_face name="miyano" face="angry" storage="chara/miyano/angry.png"]
+[chara_face name="miyano" face="mu" storage="chara/miyano/mu.png"]
+[chara_face name="miyano" face="yobi" storage="chara/miyano/yobi.png"]
+[chara_face name="miyano" face="still_1" storage="chara/miyano/still_1.png"]
 
 ;教室
 [label name="s1-classroom"]
 ;[button text="s2-図書館" target="s2-library"]
-[skipstart]
+;[skipstart]
 
 #
 俺はore。ごく普通の男子高校生だ。[p]
@@ -55,22 +69,35 @@
 お～い？[r]oreく～ん？[p]
 
 #
-？[p]
+ん？[p]
 
 ;廊下に向く
+[mask time="100"]
+[bg time="100" storage="kaimaku/back.png"]
+[layopt layer="1" visible="true"]
+[image name="waku" storage="still/waku.png" layer="1" x=0 y=-100]
+[chara_show name="miyano" wait=false]
+[chara_mod name="miyano" face="still_1" wait=false]
+[chara_show name="sutea" wait=false]
+[chara_mod name="sutea" face="still_1_1" wait=false]
+[chara_move name="miyano" left=0 top=0 wait=false]
+[chara_move name="sutea" left=0 top=600]
+
+[mask_off time="400"]
 #？？？
 どうも～[r]
 元気～？[p]
 
 #
-やあ、subちゃん。俺は元気だよ。[r][p]
-あれ？今日はhiroinは学校に来てないの？[p]
+やあ、みやのちゃん。俺は元気だよ。[r][p]
+あれ？今日はすてあは学校に来てないの？[p]
 
-#sub
+#みやの
 あ～それがね～。[p]
 
-;hiroinが下から勢いよく登場
-#hiroin
+;すてあが下から勢いよく登場
+[anim name="sutea" time=200 top=-40]
+#すてあ
 [font size="60"]わっ！！！！[p][resetfont]
 
 #
@@ -80,96 +107,113 @@
 
 [p]
 
-#hiroin
+#すてあ
+[chara_mod name="sutea" face="still_1_2"]
 えへへ～[r][p]
 びっくりした～？[p]
 
 #
 そりゃいきなり現れたらびっくりするよ……。[p]
+[anim name="miyano" left=-300]
+#みやの
+ごめんねー。すてあちゃんに頼まれてore君を驚かす手伝いをしてほしいって言われてさ～[p]
 
-#sub
-ごめんねー。hiroinちゃんに頼まれてore君を驚かす手伝いをしてほしいって言われてさ～[p]
-
-#hiroin
-え～subちゃんもノリノリだったじゃ～ん。[p]
+#すてあ
+[chara_mod name="sutea" face="still_1_1"]
+え～みやのちゃんもノリノリだったじゃ～ん。[p]
 
 #
 くっそ……[p]
 (ご覧の通り俺は超絶のビビりなのである。)[r][p]
-(しかも、幼馴染のhiroinは俺がビビりなことをからかって毎日驚かしに来るのである。)[p]
+(しかも、幼馴染のすてあは俺がビビりなことをからかって毎日驚かしに来るのである。)[p]
 (おかげで驚かされる度にクラスメイトから注目されてしまう……。)[p]
 
 #
 いつも驚かせに来るけど、そろそろやめてくれない……？[r][p]
 
-#hiroin
+#すてあ
 えー？やめてって言われても、oreの反応が面白いもーん。[p]
 絶対やめな～い。[p]
 
-#sub
+#みやの
 あはは……。[r]それじゃあ私は委員会の仕事があるからまた明日ね。[p]
 
-#hiroin
-バイバイsubちゃん！[p]
+#すてあ
+バイバイ、みやのちゃん！[p]
 
 #
 バイバイ。[p]
 
 ;スチル終了
-;mod_hiroin_normal
-#hiroin
+[mask time="500"]
+[chara_hide name="miyano" wait=false]
+[layopt layer="1" visible=false]
+[bg time="100" storage="rouka.jpg"]
+[chara_mod name="sutea" face="default"]
+[chara_move name="sutea" left=0 top=100]
+[mask_off time="1000"]
+#すてあ
+#sutea:default
 ore君はこの後どうする？[r]このまま部室に来る？[p]
 
 #
 いや、図書館に本を返しに行ってから部活に行こうかな。[p]
 
-#hiroin
+#すてあ
 そう？じゃあ私も付いていこうかな。[p]
 
 #
 じゃあ図書館に行くか。[p]
 
-[skipstop]
+;[skipstop]
 
 ;----scene1終了-----
 ;図書館へシーン遷移
 [label name="s2-library"]
+;みんちりえ（ https://min-chi.material.jp/ ）
+[bg time="2000" storage="library.jpg"]
 
-;mod_hiroin_niko
-#hiroin
+#sutea:niko
+;#すてあ
 そういえば何の本を借りてたの？[p]
 
 #
 気になった小説とかかな。[p]
 付いてきたのはいいけど、図書館だから流石に静かにしろよ。[p]
 
-;mod_hiroin_fukigen
-#hiroin
+#sutea:fukigen
+#すてあ
 そんぐらい分かってるよぅ～[l][r]
 5分で戻ってきてー。[p]
 
 #
 すぐ終わらせるから待ってろ。[p]
 
-#hiroin
+#すてあ
 はーい。[p]
 
 #
 (絶対驚かしに来るんだろうな……)[p]
+[chara_hide name="sutea"]
 
 ;図書館内に移動
+
 #
 借りてた本を返す前に次に借りる本を探すか。[p]
 どの本を借りようかな……[l][r][r]
 
 ;本を選ぶイベント発生 今週のおすすめの本のコーナーにて
-;話題の人気小説1,2(どっちかがsubのおすすめ)・推理系・エッセイ・難しそうな本・謎の本
-;時間制限でhiroinが驚かしに来るイベントを作ろうかな
+;話題の人気小説1,2(どっちかがみやののおすすめ)・推理系・エッセイ・難しそうな本・謎の本
+;時間制限ですてあが驚かしに来るイベントを作ろうかな
 
-[link target=*select1]新着のエッセイ[endlink][r]
-[link target=*select2]話題の人気小説[endlink][r]
-[link target=*select3]気になる推理小説[endlink][r]
-[link target=*select4]哲学の学術本[endlink][r]
+[glink  color="white"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="150"  text="新着のエッセイ"  target="*select1"]
+[glink  color="white"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="250"  text="話題の人気小説"  target="*select2"]
+[glink  color="white"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="350"  text="気になる推理小説"  target="*select3"]
+[glink  color="white"  storage="scene1.ks"  size="28"  x="360"  width="500"  y="450"  text="哲学の学術本"  target="*select4"]
+;[link target=*select1]新着のエッセイ[endlink][r]
+;[link target=*select2]話題の人気小説[endlink][r]
+;[link target=*select3]気になる推理小説[endlink][r]
+;[link target=*select4]哲学の学術本[endlink][r]
 [s]
 
 *select1
@@ -203,16 +247,18 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 この本にするか。[p]
 
 ;受付前に移動
-#sub
+[chara_show name="miyano"]
+#みやの
 あっore君。今日も本を借りに来たの？[p]
 
 #
 そうだよ。先に前に借りた本を返してからだけどね。[p]
 
-#sub
+#みやの
 じゃあ返却ってことだねー。[r][l]
-こ・れ・で・よし。[l] ;テキストスピードを落とす
+こ・れ・で・よし。[l] 
 返却できたよー。[p]
+;テキストスピードを落とす
 
 #
 ありがとう。[r]
@@ -221,40 +267,42 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 
 ;新着のエッセイ
 [if exp="sf.book==1"]
-#sub
+#みやの
 さんきゅー。[l]
 あっこの本って新着コーナーにあったやつ？[p]
 
 #
 そう。ちょっと前にニュースになってたから見たくなっちゃったんだ。[p]
 
-#sub
+#みやの
 へー。私も気になるから今度感想聞かせてねー。[p]
 
 #
 わかった。部活行ってるね。[p]
 
-#sub
+#みやの
 バイバーイ。また明日ー。[p]
+@jump target=*borrowed-book
+
 [endif]
 
 ;話題の人気小説
 [if exp="sf.book==2"]
-#sub
+#みやの
 さんきゅー。[l]
 おっこの本ってクラスで話題になってた本じゃん。[p]
 
 #
 そうそう。たまたま見つけたから読んでみたくなって。[p]
 
-#sub
-あのね。今その本かなり人気で[l]
+#みやの
+あのね。今その本かなり人気で[r]
 返されたらその日に借りられちゃんだよ？[p]
 
 #
 えっ？じゃあめっちゃラッキーじゃん！[p]
 
-#sub
+#みやの
 そう。まだ借りようとしてる人はけっこう居ると思うから[r]
 なる早で返してね。[p]
 
@@ -262,27 +310,29 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 そ、そうするよ……。[p]
 じゃあ部活に行くよ。バイバイ。[p]
 
-#sub
+#みやの
 じゃあねー。[p]
+@jump target=*borrowed-book
+
 [endif]
 
 ;気になる推理小説
 [if exp="sf.book==3"]
-#sub
+#みやの
 さんきゅー。[l]
 ってこれ私のおすすめの本じゃん！[p]
 
 #
-えっこの本ってsubちゃんがおすすめしてた本だったの？[p]
+えっこの本ってみやのちゃんがおすすめしてた本だったの？[p]
 
-#sub
+#みやの
 そーだよ。[r]
-君もこの本気になったの？[p]
+君もこの本のこと気になったの？[p]
 
 #
 うん、そう。この作者さんの推理小説が好きで何回も読み直したりもしてるんだ。[p]
 
-#sub
+#みやの
 えっ！そうなの？私もだよ！[p]
 私と君ってけっこう趣味合うんだねー。[p]
 かなりいい本だから、返すときに感想聞かせてね。[p]
@@ -290,26 +340,45 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 #
 分かったよ。じゃあ部活行ってくる。[p]
 
-#sub
+#みやの
 部活がんばってねー。[p]
+@jump target=*borrowed-book
+
 [endif]
 
 ;哲学の学術本
 [if exp="sf.book==4"]
+#みやの
+oreくんってこんな難しそうな本も読むんだね……。[l][r]
+初めて知ったかも。[p]
 
+#
+たまにはこういう本も読んでみよっかなって。[p]
+
+#みやの
+勉強熱心だねー。部活もがんばってねー。[p]
+
+#
+じゃあまた明日ね。[p]
+@jump target=*borrowed-book
+
+*borrowed-book
+[chara_hide name="miyano"]
 
 ;廊下
-#hiroin
+[bg time="2000" storage="rouka.jpg"]
+[chara_show name="sutea"]
+#sutea:fukigen
 ちょっとー遅いよー[r][l]
 ケッコー待ってたんだけど～。[p]
 
 #
 ごめん。ちょっと借りる本に迷っちゃって。[p]
 
-;mod_hiroin_uooo
-#hiroin
+#sutea:niko
 すぐ部活に行こう！[l][r]
 部室まで競争だ！！[p]
+[chara_hide name="sutea"]
 
 #
 あっ！ちょっとスタートダッシュずるい！[p]
@@ -319,6 +388,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 [label name="s3-club"]
 
 ;昇降口
+[bg time="1500" storage="gym_back.jpg"]
 
 #
 はぁはぁ……。[l][r]
@@ -326,13 +396,13 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 
 ;ダッシュをするミニゲームでもいい
 
-#hiroin ;横から登場
+#すてあ ;横から登場
 [font size="60"]わっ！！！！[p][resetfont]
 
 #
 うぇっっっっっ！？！？！？[p]
 
-#hiroin
+#すてあ
 あはははははっあはははっはっ[r]
 やっぱりoreの反応おもしろい～～～。[p]
 
@@ -341,13 +411,13 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 俺をダッシュで置いていったのは驚かすためだったのか……。[p]
 
 ;mod_hiroin_niko
-#hiroin
+#すてあ
 ほんとーはそんな気はなかったたんだけど、思いついちゃったんだよね～。[p]
 
 #
 こいつ……。[p]
 
-#hiroin
+#すてあ
 ちなみにレースはまだ終わってないよ～。[p]
 ;hiorinがダッシュで逃げる
 
@@ -355,7 +425,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 あっ！ちょっと待て！！[p]
 
 ;弓道場に移動、弓道着に着替えて登場
-#hiroin
+#すてあ
 わたしの勝ち～。[l][r]
 ore君、遅かったね～。[p]
 
@@ -363,16 +433,16 @@ ore君、遅かったね～。[p]
 お前が「驚かす」っていう卑怯な手を使ってくるからだろ……。[p]
 
 ;mod_hiroin_fukigen
-#hiroin
+#sutea:fukigen
 途中で物陰から現れただけだし～。[p]
 
 #
 それが「驚かす」っていうんだろ……。[r][l]
 とにかく今回のレースに関してはノーカンでしょ！[p]
 
-#hiroin
+#すてあ
 え～～～[r][l]
-;mod_hiroin_uooo
+;mod_hiroin_niko
 じゃあ的中率で勝負しようよ！！[p]
 わたし、今日の朝練ですっごく調子よかったんだよね～。[p]
 
@@ -381,21 +451,24 @@ ore君、遅かったね～。[p]
 卑怯な手は絶対使うなよ？[p]
 
 ;mod_hiroin_niko
-#hiroin
+#すてあ
 負けたほうがコンビニでアイスおごるってことで良いよね！[p]
-;mod_hiroin_uooo
+;mod_hiroin_niko
 真剣勝負だ！！[r]
 絶対負けないからな！！[p]
 
 ;----一時暗転----
+[mask time=2000]
+[mask_off time=2000]
+
 ;mod_hiroin_niko
-#hiroin
+#すてあ
 3発！3発も当たったよ！！[r][l]
 
 #
 見てたから知ってるよ……。[p]
 
-#hiroin
+#すてあ
 メチャクチャ上手くいったよ！[r][l]
 これで君は全部的中させなきゃ勝てないね～。(ニヤニヤ)[p]
 
@@ -403,7 +476,7 @@ ore君、遅かったね～。[p]
 これはかなり勝つのが厳しいな……。[p]
 全部当ててやるからな！[l]見とけよ！！[p]
 
-#hiroin
+#すてあ
 やれるもんならやってみてよ～[p]
 君が全部的中しているところ見たことないけど～？[p]
 
@@ -411,29 +484,30 @@ ore君、遅かったね～。[p]
 くそ……。[p]
 
 ;シーン転換・ゲームスタート
+[call storage="kyudo_minigame.ks"]
 ;驚かしはなし……かも　皆中しているときの4発目に何かのイベントを作ろうかな
 
 ;勝ったとき
 #
 っしゃあ！！！[p]
-見てたか！hiroin！！[p]
+見てたか！すてあ！！[p]
 
 ;mod_hiroin_sad
-#hiroin
+#すてあ
 そんなぁ……[r]
 絶対勝ったと思ってたのに……。[p]
 
 #
 それじゃあアイスはお前のおごりな[p]
 
-#hiroin
+#すてあ
 ......。[p]
 ぅわ～ん……。[r]
 ore君に脅されてるよぉ～……。[p]
 
 #女子弓道部員A
-ore君？またhiroinちゃんを泣かせてるの？[r][l]
-hiroinちゃんが可哀そうだよー。[p]
+ore君？またすてあちゃんを泣かせてるの？[r][l]
+すてあちゃんが可哀そうだよー。[p]
 
 #
 ちょっと！？泣かせてはないよ！？[p]
@@ -454,7 +528,7 @@ hiroinちゃんが可哀そうだよー。[p]
 
 #ひ
 うーん……。
-;mod_hiroin_normal
+[chara_mod name="sutea" face="normal"]
 じゃあさ、私がアイス奢るからoreのアイス奢って？
 
 #
@@ -519,7 +593,7 @@ hiroinちゃんが可哀そうだよー。[p]
 [label name="s4-konbini"]
 ;勝ち
 ;mod_hiroin_fukigen
-#hiroin
+#すてあ
 も～勝てると思ってたのに～[p]
 くやしいくやしいくやしいくやしい～～～～～[p]
 
@@ -527,7 +601,7 @@ hiroinちゃんが可哀そうだよー。[p]
 残念だったな。ははっ。[p]
 約束だぞ。アイスを奢ってもらおう。[p]
 
-#hiroin
+#すてあ
 も～～～。[r]
 oreくんのケチ！！[p]
 
@@ -535,7 +609,7 @@ oreくんのケチ！！[p]
 うるさいなぁー。[r][l]
 さっさとこのアイスを買ってくれ。[p]
 
-#hiroin
+#すてあ
 oreくんさあ……。こんなかわいい幼馴染に奢らせるとかありえないんだけど～～。[p]
 これは借りだからね～～。[p]
 
@@ -545,9 +619,9 @@ oreくんさあ……。こんなかわいい幼馴染に奢らせるとかあ�
 勝負だったのになんで借りになるんだよ。[p]
 言っとくけど、借りだったとしても返すつもりはないからな[p]
 
-#hiroin
+#すてあ
 ふーん。まあいいや。[p]
-;mod_hiroin_normal
+[chara_mod name="sutea" face="normal"]
 せっかくだし近くの公園で食べようよ！[p]
 
 #
@@ -555,7 +629,7 @@ oreくんさあ……。こんなかわいい幼馴染に奢らせるとかあ�
 公園まで行こうか。[p]
 
 ;引き分け
-;mod_hiroin_think
+;mod_hiroin_question
 #ひ
 どのアイスにしようかな〜。
 
@@ -572,10 +646,10 @@ oreは決まったー？
 これにしようかな。
 もう決まったのか？
 
-;mod_hiroin_think
+;mod_hiroin_question
 #ひ
 うーん……。
-;mod_hiroin_normal
+[chara_mod name="sutea" face="normal"]
 じゃあこれ！
 
 #
@@ -593,12 +667,12 @@ oreは決まったー？
 いや、なんでもない。
 アイスは近くの公園で食べようか。
 
-;mod_hiroin_normal
+[chara_mod name="sutea" face="normal"]
 #ひ
 わかった！行こう！
 
 ;負け
-;mod_hiroin_think
+;mod_hiroin_question
 #ひ
 うーん、どのアイスにしようかなぁ〜。
 
@@ -634,7 +708,7 @@ oreって優しいんだねー。
 #
 アイスも買えたし近くの公園で食べるぞ。
 
-;mod_hiroin_normal
+[chara_mod name="sutea" face="normal"]
 #ひ
 はーい。
 
@@ -644,8 +718,8 @@ oreって優しいんだねー。
 #
 この辺でアイス食べるか。[p]
 
-;mod_hiroin_normal
-#hiroin
+[chara_mod name="sutea" face="normal"]
+#すてあ
 ちょっとトイレに行きたいからアイス持ってて。[p]
 
 #
@@ -677,15 +751,15 @@ oreって優しいんだねー。
 うわああああああ！！！！！[p]
 
 ;mod_hiroin_niko
-#hiroin
+#すてあ
 あははははっ。[r]
 ore君いつも油断しすぎだよ～。[p]
 
 #
 アイス食ってるときに人を驚かせるな！！[p]
 
-;mod_hiroin_normal
-#hiroin
+[chara_mod name="sutea" face="normal"]
+#すてあ
 ごめんごめん。ore君が何かに集中しているところを見ると[r]
 ついイタズラしたくなっちゃうんだよ～。[p]
 
@@ -693,7 +767,7 @@ ore君いつも油断しすぎだよ～。[p]
 このっ……。[p]
 アイスが服についちゃったじゃねえかよ……。[p]
 
-#hiroin
+#すてあ
 （……。ピコーン！）[p] ;これはoreに近づくチャンスだと思っている
 あっほんとだ！[r]
 ごめんね、拭いてあげるね～。[p]
@@ -705,7 +779,7 @@ ore君いつも油断しすぎだよ～。[p]
 別にこれくらい自分でやるよ。[p]
 
 ;mod_hiroin_angry
-#hiroin
+#すてあ
 ダメ！これはわたしの仕事なの！[r]
 oreくんは座って待ってて！[p]
 （ごしごし。ごしごし……。）[p]
@@ -714,8 +788,8 @@ oreくんは座って待ってて！[p]
 （なんでコイツはこんなに怒ってるんだ……？）[p]
 （それにしても近いな……。）[p]
 
-;mod_hiroin_normal
-#hiroin
+[chara_mod name="sutea" face="normal"]
+#すてあ
 ……。;めっちゃ小さい文字で「スンスン。」と服の匂いを嗅ぐ
 よし、これでいいでしょ！[p]
 
@@ -723,7 +797,7 @@ oreくんは座って待ってて！[p]
 まあちょっとシミは残ってるけどな……。[r]
 やらないよりマシか……。[p]
 
-#hiroin
+#すてあ
 はい、わたしのアイス返してー。[p]
 
 #
@@ -731,7 +805,7 @@ oreくんは座って待ってて！[p]
 買いなおした方がいいんじゃないか？[p]
 
 
-#hiroin
+#すてあ
 別にいーよ。[r]
 ほとんどわたしが悪いし。[p]
 
@@ -743,7 +817,7 @@ oreくんは座って待ってて！[p]
 ;セミの声など公園っぽい環境音＆BGMに
 ;この後の驚かしポイントは袋破裂による爆音とか？
 
-#hiroin
+#すてあ
 やっぱり夏に公園でアイスを食べるのっていいよねー。[p]
 
 #
@@ -832,14 +906,14 @@ ore君！？大丈夫！？！？
 #
 ありがとう……。
 
-#hiroin
+#すてあ
 あれ？ちょっと待って。[p]
 （かばんの中を探し出す。）[p]
 
 #
 どうした？忘れ物か？[p]
 
-#hiroin
+#すてあ
 ……。[l]…………。[l]………………。[l]
 弁当箱がない……。[p]
 
@@ -847,13 +921,13 @@ ore君！？大丈夫！？！？
 えっ！？[l][r];衝撃による振動
 こんな暑い日に学校に置きっぱなしにしたら確実に腐っちゃうじゃん！[p]
 
-#hiroin
+#すてあ
 そうだよ……。どうしよう……。[p]
 
 #
 俺も一緒に行くから学校まで戻ろう。まだ18時だしギリギリ空いてるはずだよ！[p]
 
-#hiroin
+#すてあ
 ……。よし戻ろう！[p]
 
 ;全力ダッシュ 場面転換
@@ -862,14 +936,14 @@ ore君！？大丈夫！？！？
 #
 どこに置いてきたか覚えてるか？[p]
 
-#hiroin
+#すてあ
 分かんない！教室か弓道場だと思う！[p]
 
 #
 じゃあ二手に分かれよう！[l][r]
 俺は教室に行くよ。[p]
 
-#hiroin
+#すてあ
 分かった。わたしは弓道場を見てくる！[p]
 
 ;たぶん教室に移動
@@ -888,19 +962,19 @@ ore君！？大丈夫！？！？
 ;あまりホラー感のない歩くだけの場面
 ;必要かな……。
 ;すこししたところでsubちゃんがいきなり登場
-#sub
+#みやの
 わ～[p]
 
 #
 わあああああぁぁああぁぁぁあぁあああぁぁ！？！？！？[p]
 
-#sub
+#みやの
 あははっ。ore君がビビりだって噂、ほんとうだったんだねー。[p]
 
 #
 もー……。あまりビックリさせないでくれ……。[p]
 
-#sub
+#みやの
 ごめんごめん。一人で歩いてるore君を見かけたらやってみたくなっちゃって、[p]
 ore君はなんで学校に残ってたの？
 
@@ -908,13 +982,13 @@ ore君はなんで学校に残ってたの？
 hiorinの弁当箱を取りに来てたんだよ。
 あいつは弓道場に行ってるからそっちまで行くか。
 
-#sub
+#みやの
 そうなんだ……。ちょっと邪魔しちゃったね。
 
 #
 いいよ。弓道場まで一緒に来る？
 
-#sub
+#みやの
 ！
 じゃあ一緒に行こうかな。
 
@@ -922,14 +996,14 @@ hiorinの弁当箱を取りに来てたんだよ。
 それじゃあ行くか。
 
 ;外に移動
-#sub
+#みやの
 ……ore君はさ、hiorinちゃんのことどう思ってる？
 
 #
 ……？
 それはどういう質問？
 
-#sub
+#みやの
 うーーん。
 あんまり深い意味はないんだけどね、
 大切に思ってたらいいなって思って、
@@ -939,7 +1013,7 @@ hiorinの弁当箱を取りに来てたんだよ。
 かわいいところもあるし、一人で居るよりもあいつと居るほうが楽しいからな。
 そんな意味では大切だとは思っているが…そんなこと聞いてどうするんだ？
 
-#sub
+#みやの
 …、…………うん、ありがとう。
 聞かせてくれてありがとね。
 ……そういえばこの後すぐに予定があるんだった。
@@ -948,7 +1022,7 @@ hiorinの弁当箱を取りに来てたんだよ。
 #
 あ、ああ……。
 
-#sub
+#みやの
 じゃあバイバイ！また明日っ！！
 
 ;逃げるように去る
@@ -961,7 +1035,7 @@ hiorinの弁当箱を取りに来てたんだよ。
 #
 お前の席に残ってたぞ。もう忘れんなよ。
 
-#hiroin
+#すてあ
 ありがとね、ore君。
 
 #
@@ -971,14 +1045,14 @@ hiorinの弁当箱を取りに来てたんだよ。
 帰ろうか。
 
 ;帰り道に移動
-#hiroin
+#すてあ
 そうえいばさっき誰かと話してなかった？
 
 #
 そうなんだよ、さっきまでsubちゃんがいたんだけど先に帰った。
 なんか急用を思い出したとかで……。
 
-#hiroin
+#すてあ
 そーなんだ。なんか変だねー。
 
 #
@@ -990,14 +1064,14 @@ hiorinの弁当箱を取りに来てたんだよ。
 ……ちょっと水飲んでもいいか？
 走りまくったせいで喉が渇いた。
 
-#hiroin
+#すてあ
 いいよー。
 私はもう飲み干しちゃったんだよね。
 
 #
 お金は持ってないのか？そこに自販機あるけど。
 
-#hiroin
+#すてあ
 アイス買ったときに無くなっちゃった。
 もう買える分は残ってないよ。
 
@@ -1005,7 +1079,7 @@ hiorinの弁当箱を取りに来てたんだよ。
 ……じゃあ買ってあげようか？
 奢ってもらった分の余裕があるし。
 
-#hiroin
+#すてあ
 えっ？ほんとにいいの？
 
 #
@@ -1014,7 +1088,7 @@ hiorinの弁当箱を取りに来てたんだよ。
 はい、これ。
 
 ;mod_hiroin_odoroki
-#hiroin
+#すてあ
 ……ありがとう。
 ほんとうにore君はやさしいね。
 
@@ -1025,14 +1099,14 @@ hiorinの弁当箱を取りに来てたんだよ。
 #
 ……そろそろ分かれ道だね。
 
-#hiroin
+#すてあ
 ……。
 
 #
 じゃあバイバイ。また明日。
 
 ;画面を急に振り向かせる
-#hiroin
+#すてあ
 ……あの！今日はほんとにありがとう！
 お礼は、……またいつか返すから！
 そのときに！！
