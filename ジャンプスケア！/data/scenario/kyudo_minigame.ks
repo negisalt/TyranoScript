@@ -3,20 +3,25 @@
 
 [iscript]
 (function () {
-    var config = {
+    var CONFIG = {
         width: 1280,
         height: 720,
-        shots: 4,
-        hitRadius: 45,
-        holdTime: 10000,
+        targetScale: 0.6,
+        hitBoxRadius: 40,
+        initialSwayRadius: 150,
+        minSwayRadius: 20,
+        swayMoveDuration: 200,
+        maxHoldTime: 10.0,
+        totalShots: 4,
+        resultVariableName: "f.kyudo_result",
         // 画像を使う場合は index.html からの相対パスを指定します。
         backgroundImage: "",
-        targetImage: "",
+        targetImage: "data/fgimage/something/kyudo_target.png",
         reticleImage: ""
     };
 
-    var width = config.width;
-    var height = config.height;
+    var width = CONFIG.width;
+    var height = CONFIG.height;
     var centerX = width / 2;
     var centerY = height / 2 - 20;
     var canvas = document.createElement("canvas");
@@ -26,9 +31,12 @@
     var phase = "ready";
     var holding = false;
     var holdStartedAt = 0;
+    var swaySegmentStartedAt = 0;
+    var swayFromAngle = 0;
+    var swayToAngle = 0;
+    var initialSwaySegment = false;
     var gauge = 0;
     var aimOffset = { x: 0, y: 0 };
-    var aimRadius = 0;
     var aimScale = 1;
     var animationFrame = 0;
     var overlay = document.createElement("div");
@@ -70,9 +78,9 @@
         image.src = source;
     }
 
-    loadImage("background", config.backgroundImage);
-    loadImage("target", config.targetImage);
-    loadImage("reticle", config.reticleImage);
+    loadImage("background", CONFIG.backgroundImage);
+    loadImage("target", CONFIG.targetImage);
+    loadImage("reticle", CONFIG.reticleImage);
 
     function drawBackground() {
         var image = images.background;
@@ -108,7 +116,7 @@
 
     function drawTarget(x, y, scale) {
         var image = images.target;
-        var size = 300 * scale;
+        var size = 300 * CONFIG.targetScale * scale;
         if (image) {
             context.drawImage(image, x - size / 2, y - size / 2, size, size);
             return;
@@ -124,7 +132,7 @@
         ];
         context.save();
         context.translate(x, y);
-        context.scale(scale, scale);
+        context.scale(CONFIG.targetScale * scale, CONFIG.targetScale * scale);
         for (var i = 0; i < rings.length; i++) {
             context.beginPath();
             context.arc(0, 0, rings[i].radius, 0, Math.PI * 2);
@@ -203,7 +211,13 @@
         for (var i = 0; i < shots.length; i++) {
             var shot = shots[i];
             context.beginPath();
-            context.arc(centerX + shot.x, centerY + shot.y, 7, 0, Math.PI * 2);
+            context.arc(
+                centerX + shot.x * CONFIG.targetScale,
+                centerY + shot.y * CONFIG.targetScale,
+                7,
+                0,
+                Math.PI * 2
+            );
             context.fillStyle = "#101010";
             context.fill();
             context.strokeStyle = "#f4f0e8";
@@ -213,13 +227,13 @@
 
         context.fillStyle = "rgba(0, 0, 0, 0.62)";
         context.fillRect(34, 30, 310, 92);
-        var displayShot = phase === "result" ? shots.length : Math.min(shots.length + 1, config.shots);
-        drawText(displayShot + "/" + config.shots + " 射目", 55, 62, 28, "#fff", "left");
+        var displayShot = phase === "result" ? shots.length : Math.min(shots.length + 1, CONFIG.totalShots);
+        drawText(displayShot + "/" + CONFIG.totalShots + " 射目", 55, 62, 28, "#fff", "left");
         drawText("的中 " + shots.filter(function (shot) { return shot.hit; }).length + " 本", 55, 100, 23, "#fff", "left");
 
         if (phase === "ready") {
             drawText("画面を長押しして狙い、離すと矢を放ちます", centerX, 475, 26, "#fff");
-            drawText("的の中心から " + config.hitRadius + " px 以内で的中", centerX, 515, 19, "#f5e7b0");
+            drawText("的の中心から " + CONFIG.hitBoxRadius + " px 以内で的中", centerX, 515, 19, "#f5e7b0");
             drawButton(shots.length ? "画面を押して次の射へ" : "画面を押して第一射へ");
         } else if (phase === "aim") {
             drawReticle();
@@ -229,11 +243,11 @@
             drawReticle();
             var lastShot = shots[shots.length - 1];
             drawText(lastShot.hit ? "中り！" : (lastShot.wild ? "暴発！ ハズレ" : "ハズレ"), centerX, 470, 34, lastShot.hit ? "#ffe66a" : "#fff");
-            if (shots.length >= config.shots) {
+            if (shots.length >= CONFIG.totalShots) {
                 var result = getResult();
                 var resultLabel = result === "success" ? "成功" : (result === "draw" ? "あいこ" : "失敗");
                 drawText("最終結果: " + resultLabel, centerX, 516, 25, "#fff");
-                drawText("的中 " + shots.filter(function (shot) { return shot.hit; }).length + "/" + config.shots + " 本", centerX, 550, 20, "#f5e7b0");
+                drawText("的中 " + shots.filter(function (shot) { return shot.hit; }).length + "/" + CONFIG.totalShots + " 本", centerX, 550, 20, "#f5e7b0");
                 drawButton("押してシナリオへ戻る");
             } else {
                 drawButton("押して次の射へ");
@@ -249,7 +263,45 @@
 
     function getResult() {
         var hitCount = shots.filter(function (shot) { return shot.hit; }).length;
-        return hitCount === 4 ? "success" : (hitCount === 3 ? "draw" : "failed");
+        return hitCount === CONFIG.totalShots ? "success" : (hitCount === CONFIG.totalShots - 1 ? "draw" : "failed");
+    }
+
+    function getHoldRatio(now) {
+        return Math.max(0, Math.min(1, (now - holdStartedAt) / (CONFIG.maxHoldTime * 1000)));
+    }
+
+    function getSwayRadius(holdRatio) {
+        return CONFIG.initialSwayRadius + (CONFIG.minSwayRadius - CONFIG.initialSwayRadius) * holdRatio;
+    }
+
+    function beginSway(now) {
+        swayFromAngle = Math.random() * Math.PI * 2;
+        swayToAngle = swayFromAngle;
+        swaySegmentStartedAt = now;
+        initialSwaySegment = true;
+        aimOffset.x = 0;
+        aimOffset.y = 0;
+    }
+
+    function updateSway(now, holdRatio) {
+        var elapsed = now - swaySegmentStartedAt;
+        while (elapsed >= CONFIG.swayMoveDuration) {
+            swayFromAngle = swayToAngle;
+            swayToAngle = swayFromAngle + Math.PI + (Math.random() - 0.5) * (Math.PI / 2);
+            swaySegmentStartedAt += CONFIG.swayMoveDuration;
+            initialSwaySegment = false;
+            elapsed = now - swaySegmentStartedAt;
+        }
+
+        var segmentRatio = Math.max(0, Math.min(1, elapsed / CONFIG.swayMoveDuration));
+        var easedRatio = 0.5 - Math.cos(Math.PI * segmentRatio) / 2;
+        var angle = swayFromAngle + (swayToAngle - swayFromAngle) * easedRatio;
+        var radius = getSwayRadius(holdRatio);
+        if (initialSwaySegment) {
+            radius *= easedRatio;
+        }
+        aimOffset.x = Math.cos(angle) * radius;
+        aimOffset.y = Math.sin(angle) * radius;
     }
 
     function finishGame() {
@@ -257,7 +309,7 @@
             return;
         }
         gameFinished = true;
-        f.kyudo_result = getResult();
+        f[CONFIG.resultVariableName.replace(/^f\./, "")] = getResult();
         cancelAnimationFrame(animationFrame);
         overlay.removeEventListener("pointerdown", onPointerDown);
         window.removeEventListener("pointerup", onPointerUp);
@@ -276,13 +328,19 @@
         var hit = false;
         if (wild) {
             var angle = Math.random() * Math.PI * 2;
-            var distance = config.hitRadius + 80 + Math.random() * 120;
+            var directionX = Math.cos(angle);
+            var directionY = Math.sin(angle);
+            var horizontalEdge = directionX >= 0 ? width - centerX : centerX;
+            var verticalEdge = directionY >= 0 ? height - centerY : centerY;
+            var horizontalDistance = Math.abs(directionX) > 0.0001 ? horizontalEdge / Math.abs(directionX) : Infinity;
+            var verticalDistance = Math.abs(directionY) > 0.0001 ? verticalEdge / Math.abs(directionY) : Infinity;
+            var distance = Math.min(horizontalDistance, verticalDistance) + 100;
             impactX = Math.cos(angle) * distance;
             impactY = Math.sin(angle) * distance;
         } else {
-            impactX = -aimOffset.x / aimScale;
-            impactY = -aimOffset.y / aimScale;
-            hit = Math.sqrt(impactX * impactX + impactY * impactY) <= config.hitRadius;
+            impactX = -aimOffset.x / (CONFIG.targetScale * aimScale);
+            impactY = -aimOffset.y / (CONFIG.targetScale * aimScale);
+            hit = Math.sqrt(aimOffset.x * aimOffset.x + aimOffset.y * aimOffset.y) <= CONFIG.hitBoxRadius;
         }
         shots.push({ x: impactX, y: impactY, hit: hit, wild: wild });
         phase = "result";
@@ -293,7 +351,7 @@
     function onPointerDown(event) {
         event.preventDefault();
         if (phase === "result") {
-            if (shots.length >= config.shots) {
+            if (shots.length >= CONFIG.totalShots) {
                 finishGame();
             } else {
                 phase = "ready";
@@ -308,6 +366,7 @@
         phase = "aim";
         holding = true;
         holdStartedAt = performance.now();
+        beginSway(holdStartedAt);
         gauge = 0;
         if (canvas.setPointerCapture) {
             canvas.setPointerCapture(event.pointerId);
@@ -329,15 +388,11 @@
             return;
         }
         if (phase === "aim" && holding) {
-            var elapsed = performance.now() - holdStartedAt;
-            gauge = Math.min(100, elapsed / config.holdTime * 100);
-            var wobbleRatio = gauge < 80 ? 1 - gauge / 80 : 0.08;
-            aimRadius = 110 * wobbleRatio;
-            aimScale = 1 + gauge / 100 * 0.18;
-            var angle = Math.random() * Math.PI * 2;
-            var distance = Math.random() * aimRadius;
-            aimOffset.x = Math.cos(angle) * distance;
-            aimOffset.y = Math.sin(angle) * distance;
+            var now = performance.now();
+            var holdRatio = getHoldRatio(now);
+            gauge = holdRatio * 100;
+            aimScale = 1 + holdRatio * 0.18;
+            updateSway(now, holdRatio);
             if (gauge >= 100) {
                 shoot(true);
             }

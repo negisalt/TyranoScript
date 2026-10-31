@@ -48,6 +48,16 @@
 [chara_face name="sutea" face="still_1_1" storage="chara/sutea/still_1_1.png"]
 [chara_face name="sutea" face="still_1_2" storage="chara/sutea/still_1_2.png"]
 
+;hiroin_　すてあ 弓道ver
+[chara_new name="suteak" storage="chara/suteak/normal.png" jname="すてあ"]
+[chara_face name="suteak" face="angry" storage="chara/suteak/angry.png"]
+[chara_face name="suteak" face="fukigen" storage="chara/suteak/fukigen.png"]
+[chara_face name="suteak" face="niko" storage="chara/suteak/niko.png"]
+[chara_face name="suteak" face="odoroki" storage="chara/suteak/odoroki.png"]
+[chara_face name="suteak" face="question" storage="chara/suteak/question.png"]
+[chara_face name="suteak" face="sad" storage="chara/suteak/sad.png"]
+[chara_face name="suteak" face="yobi" storage="chara/suteak/yobi.png"]
+
 ;sub_　みやの
 [chara_new name="miyano" storage="chara/miyano/normal.png" jname="みやの"]
 [chara_face name="miyano" face="angry" storage="chara/miyano/angry.png"]
@@ -58,7 +68,7 @@
 ;教室
 [label name="s1-classroom"]
 ;[button text="s2-図書館" target="s2-library"]
-;[skipstart]
+[skipstart]
 
 #
 俺はore。ごく普通の男子高校生だ。[p]
@@ -171,7 +181,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 ;図書館へシーン遷移
 [label name="s2-library"]
 ;みんちりえ（ https://min-chi.material.jp/ ）
-[bg time="2000" storage="library.jpg"]
+[bg time="1500" storage="library.jpg"]
 
 #sutea:niko
 ;#すてあ
@@ -218,25 +228,25 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 
 *select1
 [cm]
-[eval exp="sf.book = 1"]
+[eval exp="f.book = 1"]
 新着のエッセイを選んだ[l]
 @jump target=*common
 
 *select2
 [cm]
-[eval exp="sf.book = 2"]
+[eval exp="f.book = 2"]
 話題の人気小説を選んだ[l]
 @jump target=*common
 
 *select3
 [cm]
-[eval exp="sf.book = 3"]
+[eval exp="f.book = 3"]
 気になる推理小説を選んだ[l]
 @jump target=*common
 
 *select4
 [cm]
-[eval exp="sf.book = 4"]
+[eval exp="f.book = 4"]
 哲学の学術本を選んだ[l]
 @jump target=*common
 
@@ -266,7 +276,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 
 
 ;新着のエッセイ
-[if exp="sf.book==1"]
+[if exp="f.book==1"]
 #みやの
 さんきゅー。[l]
 あっこの本って新着コーナーにあったやつ？[p]
@@ -287,7 +297,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 [endif]
 
 ;話題の人気小説
-[if exp="sf.book==2"]
+[if exp="f.book==2"]
 #みやの
 さんきゅー。[l]
 おっこの本ってクラスで話題になってた本じゃん。[p]
@@ -317,7 +327,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 [endif]
 
 ;気になる推理小説
-[if exp="sf.book==3"]
+[if exp="f.book==3"]
 #みやの
 さんきゅー。[l]
 ってこれ私のおすすめの本じゃん！[p]
@@ -347,7 +357,7 @@ ore君はこの後どうする？[r]このまま部室に来る？[p]
 [endif]
 
 ;哲学の学術本
-[if exp="sf.book==4"]
+[if exp="f.book==4"]
 #みやの
 oreくんってこんな難しそうな本も読むんだね……。[l][r]
 初めて知ったかも。[p]
@@ -361,12 +371,13 @@ oreくんってこんな難しそうな本も読むんだね……。[l][r]
 #
 じゃあまた明日ね。[p]
 @jump target=*borrowed-book
+[endif]
 
 *borrowed-book
 [chara_hide name="miyano"]
 
 ;廊下
-[bg time="2000" storage="rouka.jpg"]
+[bg time="1500" storage="rouka.jpg"]
 [chara_show name="sutea"]
 #sutea:fukigen
 ちょっとー遅いよー[r][l]
@@ -386,7 +397,9 @@ oreくんってこんな難しそうな本も読むんだね……。[l][r]
 ;場面変更
 ;----シーン２終了----
 [label name="s3-club"]
+[skipstop]
 
+[chara_show name="sutea" left=1000 width=900]
 ;昇降口
 [bg time="1500" storage="gym_back.jpg"]
 
@@ -397,12 +410,14 @@ oreくんってこんな難しそうな本も読むんだね……。[l][r]
 ;ダッシュをするミニゲームでもいい
 
 #すてあ ;横から登場
+[anim name="sutea" left=0 width=900 time="300"]
+;[chara_move name="sutea" left=0 time=1]
 [font size="60"]わっ！！！！[p][resetfont]
 
 #
 うぇっっっっっ！？！？！？[p]
 
-#すてあ
+#sutea:niko
 あはははははっあはははっはっ[r]
 やっぱりoreの反応おもしろい～～～。[p]
 
@@ -410,39 +425,44 @@ oreくんってこんな難しそうな本も読むんだね……。[l][r]
 このやろぉ……。[r]
 俺をダッシュで置いていったのは驚かすためだったのか……。[p]
 
-;mod_hiroin_niko
-#すてあ
+
+#sutea:niko
 ほんとーはそんな気はなかったたんだけど、思いついちゃったんだよね～。[p]
 
 #
 こいつ……。[p]
 
-#すてあ
+#sutea:default
 ちなみにレースはまだ終わってないよ～。[p]
+[anim name="sutea" left="900" time=500]
 ;hiorinがダッシュで逃げる
 
 #
 あっ！ちょっと待て！！[p]
 
+[chara_hide name="sutea"]
+
+[bg time="2000" storage="kyudo.jpg"]
 ;弓道場に移動、弓道着に着替えて登場
-#すてあ
+[chara_show name="suteak"]
+
+#suteak:default
 わたしの勝ち～。[l][r]
 ore君、遅かったね～。[p]
 
 #
 お前が「驚かす」っていう卑怯な手を使ってくるからだろ……。[p]
 
-;mod_hiroin_fukigen
-#sutea:fukigen
+#suteak:fukigen
 途中で物陰から現れただけだし～。[p]
 
 #
 それが「驚かす」っていうんだろ……。[r][l]
 とにかく今回のレースに関してはノーカンでしょ！[p]
 
-#すてあ
+#suteak:fukigen
 え～～～[r][l]
-;mod_hiroin_niko
+#suteak:niko
 じゃあ的中率で勝負しようよ！！[p]
 わたし、今日の朝練ですっごく調子よかったんだよね～。[p]
 
@@ -450,10 +470,9 @@ ore君、遅かったね～。[p]
 的中率の勝負なら望むところだ！[r]
 卑怯な手は絶対使うなよ？[p]
 
-;mod_hiroin_niko
-#すてあ
+#suteak:niko
 負けたほうがコンビニでアイスおごるってことで良いよね！[p]
-;mod_hiroin_niko
+#
 真剣勝負だ！！[r]
 絶対負けないからな！！[p]
 
@@ -461,14 +480,14 @@ ore君、遅かったね～。[p]
 [mask time=2000]
 [mask_off time=2000]
 
-;mod_hiroin_niko
-#すてあ
+#suteak:niko
 3発！3発も当たったよ！！[r][l]
+すごいでしょ！！[p]
 
 #
 見てたから知ってるよ……。[p]
 
-#すてあ
+#suteak:niko
 メチャクチャ上手くいったよ！[r][l]
 これで君は全部的中させなきゃ勝てないね～。(ニヤニヤ)[p]
 
@@ -476,7 +495,7 @@ ore君、遅かったね～。[p]
 これはかなり勝つのが厳しいな……。[p]
 全部当ててやるからな！[l]見とけよ！！[p]
 
-#すてあ
+#suteak:default
 やれるもんならやってみてよ～[p]
 君が全部的中しているところ見たことないけど～？[p]
 
@@ -484,23 +503,25 @@ ore君、遅かったね～。[p]
 くそ……。[p]
 
 ;シーン転換・ゲームスタート
+[mask time="1000"]
+[mask_off time=100]
 [call storage="kyudo_minigame.ks"]
 ;驚かしはなし……かも　皆中しているときの4発目に何かのイベントを作ろうかな
 
-;勝ったとき
+[if exp="f.kyudo_result==success"]
+;-----勝ったとき-----
 #
 っしゃあ！！！[p]
 見てたか！すてあ！！[p]
 
-;mod_hiroin_sad
-#すてあ
+#suteak:sad
 そんなぁ……[r]
 絶対勝ったと思ってたのに……。[p]
 
 #
 それじゃあアイスはお前のおごりな[p]
 
-#すてあ
+#suteak:sad
 ......。[p]
 ぅわ～ん……。[r]
 ore君に脅されてるよぉ～……。[p]
@@ -512,88 +533,91 @@ ore君？またすてあちゃんを泣かせてるの？[r][l]
 #
 ちょっと！？泣かせてはないよ！？[p]
 っていうか全部的中したことを褒めてくれてもいいじゃないの！？[p]
+@jump target=*convini_success
 
-;引き分け
+[elsif exp="f.kyudo_result==draw"]
+;-----引き分け-----
 #
-引き分けかぁ……
+引き分けかぁ……[p]
 
-;mod_hiroin_fukigen
-#ひ
-これじゃあ勝負つかないじゃん……。
-もう勝ち負け関係なくアイス奢ってよ！
-
-#
-はぁ？それは約束が違うだろ！
-引き分けならアイスを義務は無いだろ。
-
-#ひ
-うーん……。
-[chara_mod name="sutea" face="normal"]
-じゃあさ、私がアイス奢るからoreのアイス奢って？
+#suteak:fukigen
+これじゃあ勝負つかないじゃん……。[p]
+もう勝ち負け関係なくアイス奢ってよ！[p]
 
 #
-？
-どういうことだよ……？
+はぁ？それは約束が違うだろ！[p]
+引き分けならアイスを義務は無いだろ。[p]
 
-#ひ
-引き分けたってことは、両方が勝って、両方が負けたってことでしょ？
-だったらこれでいいんじゃない？
-
-#
-なんでそんな無駄なことを……？
-自分でアイスを買えばいいだけだろ。
-
-;mod_hiroin_fukigen
-#ひ
-やだ！奢ってもらうことが大事なの！
+#suteak:yobi
+うーん……。[p]
+#suteak:default
+じゃあさ、私がアイス奢るからoreもアイス奢って？[p]
 
 #
-分かったよ……。
-部活終わったらコンビニ行くぞ。
+？[l,r]
+どういうことだよ……？[p]
 
-;mod_hiroin_niko
-#ひ
-はーい♪
-
-#
-(なんなんだコイツ……)
-
-;負け
-#
-ま、負けてしまった……。
-
-;mod_hiroin_niko
-#ひ
-イェーイ！私の勝ち〜！
-ちゃんとアイス奢ってね〜。
+#suteak:default
+引き分けたってことは、両方が勝って、両方が負けたってことでしょ？[p]
+だったらこれでいいんじゃない？[p]
 
 #
-くそっ……。
+なんでそんな無駄なことを……？[l,r]
+自分でアイスを買えばいいだけだろ。[p]
 
-#ひ
-どんなアイスにするか楽しみだな〜。
-高いやつにしちゃおうかな〜。
+#suteak:fukigen
+やだ！奢ってもらうことが大事なの！[p]
 
 #
-……。
-…帰りにそこのコンビニでアイス奢ってやるから、
-着替えたら待っとけよ…。
+分かったよ……。[l,r]
+部活終わったらコンビニ行くぞ。[p]
 
-#ひ
-！
-わーい！oreがアイス奢ってくれるって〜。
+#suteak:niko
+はーい♪[p]
+
+#
+(なんなんだコイツ……)[p]
+
+@jump target=*convini_draw
+[elsif exp="f.kyudo_result==failed"]
+;-----負け-----
+#
+ま、負けてしまった……。[p]
+
+#suteak:niko
+イェーイ！私の勝ち〜！[l,r]
+ちゃんとアイス奢ってね〜。[p]
+
+#
+くそっ……。[p]
+
+#suteak:niko
+どんなアイスにするか楽しみだな〜。[p]
+高いやつにしちゃおうかな〜。[p]
+
+#
+……。[p]
+…帰りにそこのコンビニでアイス奢ってやるから、[l]
+着替えたら待っとけよ…。[p]
+
+#suteak:odoroki
+！[p]
+#suteak:niko
+わーい！oreがアイス奢ってくれるって〜。[p]
 
 #女子部員A
 え〜いいな〜。私の分も奢ってよ〜。
 
 #
 さすがに一人が限界だ……。勘弁してくれ……。
-
+@jump target=*convini_failed
+[endif]
 ;----コンビニに移動----
 [label name="s4-konbini"]
-;勝ち
-;mod_hiroin_fukigen
-#すてあ
+
+;-----勝ち-----
+*convini_success
+#suteak:fukigen
 も～勝てると思ってたのに～[p]
 くやしいくやしいくやしいくやしい～～～～～[p]
 
@@ -601,7 +625,7 @@ ore君？またすてあちゃんを泣かせてるの？[r][l]
 残念だったな。ははっ。[p]
 約束だぞ。アイスを奢ってもらおう。[p]
 
-#すてあ
+#suteak:fukigen
 も～～～。[r]
 oreくんのケチ！！[p]
 
@@ -609,7 +633,7 @@ oreくんのケチ！！[p]
 うるさいなぁー。[r][l]
 さっさとこのアイスを買ってくれ。[p]
 
-#すてあ
+#sutea:fukigen
 oreくんさあ……。こんなかわいい幼馴染に奢らせるとかありえないんだけど～～。[p]
 これは借りだからね～～。[p]
 
@@ -619,106 +643,103 @@ oreくんさあ……。こんなかわいい幼馴染に奢らせるとかあ�
 勝負だったのになんで借りになるんだよ。[p]
 言っとくけど、借りだったとしても返すつもりはないからな[p]
 
-#すてあ
+#sutea:fukigen
 ふーん。まあいいや。[p]
-[chara_mod name="sutea" face="normal"]
+[chara_mod name="sutea" face="default"]
 せっかくだし近くの公園で食べようよ！[p]
 
 #
 そうだな。[r]
 公園まで行こうか。[p]
+@jump target=*bought_ice
 
-;引き分け
-;mod_hiroin_question
-#ひ
-どのアイスにしようかな〜。
-
-#
-言っとくけど、あまり高いやつにするなよ。
-今月かなり厳しいんだ。
-
-;mod_hiroin_fukigen
-#ひ
-わかってるよ〜。
-oreは決まったー？
+;-----引き分け-----
+*convini_draw
+#sutea:question
+どのアイスにしようかな〜。[p]
 
 #
-これにしようかな。
-もう決まったのか？
+言っとくけど、あまり高いやつにするなよ。[l,r]
+今月かなり厳しいんだ。[p]
 
-;mod_hiroin_question
-#ひ
-うーん……。
-[chara_mod name="sutea" face="normal"]
-じゃあこれ！
+#sutea:fukigen
+わかってるよ〜。[l,r]
+oreは決まったー？[p]
 
 #
-決まったな。レジ行くぞ。
+これにしようかな。[l,r]
+もう決まったのか？[p]
+
+#sutea:question
+うーん……。[p]
+#sutea:default
+じゃあこれ！[p]
+
+#
+決まったな。レジ行くぞ。[p]
 
 ;現金決済×2
 #
-(あぶねーあとちょっとしかお金が残ってないし……)
+(あぶねーあとちょっとしかお金が残ってないし……)[p]
 
-#ひ
-;mod_hiroin_question
-ん？どうしたの？
-
-#
-いや、なんでもない。
-アイスは近くの公園で食べようか。
-
-[chara_mod name="sutea" face="normal"]
-#ひ
-わかった！行こう！
-
-;負け
-;mod_hiroin_question
-#ひ
-うーん、どのアイスにしようかなぁ〜。
+#sutea:question
+ん？どうしたの？[p]
 
 #
-(頼む、できるだけ安いやつにしてくれ……!)
+いや、なんでもない。[l,r]
+アイスは近くの公園で食べようか。[p]
 
-#ひ
-この期間限定のやつが気になるなぁ〜。
-誰か奢ってくれる優しい人はいないかな〜。
+#sutea:default
+わかった！行こう！[p]
+@jump target=*bought_ice
 
-#
-…アイスは決まったか？
-
-;mod_hiroin_odoroki
-#ひ
-えっ！もしかして奢ってくれるの！？
-;mod_hiroin_niko
-ありがと〜！
+;-----負け-----
+*convini_failed
+#sutea:question
+うーん、どのアイスにしようかなぁ〜。[p]
 
 #
-元々そう言う約束だっただろ……。
-レジに持ってくから渡せ。
+(頼む、できるだけ安いやつにしてくれ……!)[p]
 
-;mod_hiroin_niko
-#ひ
-はい、どーぞ。
-oreって優しいんだねー。
+#sutea:default
+この期間限定のやつが気になるなぁ〜。[p]
+誰か奢ってくれる優しい人はいないかな〜。[p]
 
 #
-(何を考えているんだコイツは……)
+…アイスは決まったか？[p]
+
+#sutea:odoroki
+えっ！もしかして奢ってくれるの！？[l,r]
+#sutea:niko
+ありがと〜！[p]
+
+#
+元々そう言う約束だっただろ……。[l,r]
+レジに持ってくから渡せ。[p]
+
+#sutea:niko
+はい、どーぞ。[p]
+oreって優しいんだねー。[p]
+
+#
+(何を考えているんだコイツは……)[p]
 ;現金決済
 
 #
-アイスも買えたし近くの公園で食べるぞ。
+アイスも買えたし近くの公園で食べるぞ。[p]
 
-[chara_mod name="sutea" face="normal"]
-#ひ
-はーい。
+#sutea:default
+はーい。[p]
+@jump target=*bought_ice
 
+*bought_ice
 ;----公園に移動----
 [label name="s5-park"]
 
 #
 この辺でアイス食べるか。[p]
 
-[chara_mod name="sutea" face="normal"]
+[chara_mod name="sutea" face="default"]
 #すてあ
 ちょっとトイレに行きたいからアイス持ってて。[p]
 
@@ -758,7 +779,7 @@ ore君いつも油断しすぎだよ～。[p]
 #
 アイス食ってるときに人を驚かせるな！！[p]
 
-[chara_mod name="sutea" face="normal"]
+[chara_mod name="sutea" face="default"]
 #すてあ
 ごめんごめん。ore君が何かに集中しているところを見ると[r]
 ついイタズラしたくなっちゃうんだよ～。[p]
@@ -788,7 +809,7 @@ oreくんは座って待ってて！[p]
 （なんでコイツはこんなに怒ってるんだ……？）[p]
 （それにしても近いな……。）[p]
 
-[chara_mod name="sutea" face="normal"]
+[chara_mod name="sutea" face="default"]
 #すてあ
 ……。;めっちゃ小さい文字で「スンスン。」と服の匂いを嗅ぐ
 よし、これでいいでしょ！[p]
