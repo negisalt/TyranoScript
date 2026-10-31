@@ -7,10 +7,10 @@
         width: 1280,
         height: 720,
         targetScale: 0.6,
-        hitBoxRadius: 40,
-        initialSwayRadius: 150,
-        minSwayRadius: 20,
-        swayMoveDuration: 200,
+        hitBoxRadius: 100,
+        initialSwayRadius: 300,
+        minSwayRadius: 100,
+        swayMoveDuration: 350,
         maxHoldTime: 10.0,
         totalShots: 4,
         resultVariableName: "f.kyudo_result",
@@ -32,11 +32,10 @@
     var holding = false;
     var holdStartedAt = 0;
     var swaySegmentStartedAt = 0;
-    var swayFromAngle = 0;
-    var swayToAngle = 0;
-    var initialSwaySegment = false;
+    var swayFrom = { x: 0, y: 0 };
+    var swayTo = { x: 0, y: 0 };
     var gauge = 0;
-    var aimOffset = { x: 0, y: 0 };
+    var reticleOffset = { x: 0, y: 0 };
     var aimScale = 1;
     var animationFrame = 0;
     var overlay = document.createElement("div");
@@ -142,10 +141,10 @@
         context.restore();
     }
 
-    function drawReticle() {
+    function drawReticle(x, y) {
         var image = images.reticle;
         if (image) {
-            context.drawImage(image, centerX - 28, centerY - 28, 56, 56);
+            context.drawImage(image, x - 28, y - 28, 56, 56);
             return;
         }
         context.save();
@@ -154,15 +153,15 @@
         context.shadowColor = "#000";
         context.shadowBlur = 4;
         context.beginPath();
-        context.arc(centerX, centerY, 18, 0, Math.PI * 2);
-        context.moveTo(centerX - 32, centerY);
-        context.lineTo(centerX - 8, centerY);
-        context.moveTo(centerX + 8, centerY);
-        context.lineTo(centerX + 32, centerY);
-        context.moveTo(centerX, centerY - 32);
-        context.lineTo(centerX, centerY - 8);
-        context.moveTo(centerX, centerY + 8);
-        context.lineTo(centerX, centerY + 32);
+        context.arc(x, y, 18, 0, Math.PI * 2);
+        context.moveTo(x - 32, y);
+        context.lineTo(x - 8, y);
+        context.moveTo(x + 8, y);
+        context.lineTo(x + 32, y);
+        context.moveTo(x, y - 32);
+        context.lineTo(x, y - 8);
+        context.moveTo(x, y + 8);
+        context.lineTo(x, y + 32);
         context.stroke();
         context.restore();
     }
@@ -204,16 +203,14 @@
 
     function render() {
         drawBackground();
-        var targetX = centerX + aimOffset.x;
-        var targetY = centerY + aimOffset.y;
-        drawTarget(targetX, targetY, aimScale);
+        drawTarget(centerX, centerY, aimScale);
 
         for (var i = 0; i < shots.length; i++) {
             var shot = shots[i];
             context.beginPath();
             context.arc(
-                centerX + shot.x * CONFIG.targetScale,
-                centerY + shot.y * CONFIG.targetScale,
+                centerX + shot.x,
+                centerY + shot.y,
                 7,
                 0,
                 Math.PI * 2
@@ -236,12 +233,12 @@
             drawText("的の中心から " + CONFIG.hitBoxRadius + " px 以内で的中", centerX, 515, 19, "#f5e7b0");
             drawButton(shots.length ? "画面を押して次の射へ" : "画面を押して第一射へ");
         } else if (phase === "aim") {
-            drawReticle();
+            drawReticle(centerX + reticleOffset.x, centerY + reticleOffset.y);
             drawGauge();
             drawText(gauge >= 80 ? "狙いを定めて、離す！" : "長押し中…", centerX, 500, 22, "#fff");
         } else if (phase === "result") {
-            drawReticle();
             var lastShot = shots[shots.length - 1];
+            drawReticle(centerX + lastShot.x, centerY + lastShot.y);
             drawText(lastShot.hit ? "中り！" : (lastShot.wild ? "暴発！ ハズレ" : "ハズレ"), centerX, 470, 34, lastShot.hit ? "#ffe66a" : "#fff");
             if (shots.length >= CONFIG.totalShots) {
                 var result = getResult();
@@ -255,8 +252,8 @@
         }
 
         if (phase !== "aim") {
-            aimOffset.x = 0;
-            aimOffset.y = 0;
+            reticleOffset.x = 0;
+            reticleOffset.y = 0;
             aimScale = 1;
         }
     }
@@ -275,33 +272,34 @@
     }
 
     function beginSway(now) {
-        swayFromAngle = Math.random() * Math.PI * 2;
-        swayToAngle = swayFromAngle;
+        var angle = Math.random() * Math.PI * 2;
+        var radius = getSwayRadius(0);
+        swayFrom.x = 0;
+        swayFrom.y = 0;
+        swayTo.x = Math.cos(angle) * radius;
+        swayTo.y = Math.sin(angle) * radius;
         swaySegmentStartedAt = now;
-        initialSwaySegment = true;
-        aimOffset.x = 0;
-        aimOffset.y = 0;
+        reticleOffset.x = 0;
+        reticleOffset.y = 0;
     }
 
-    function updateSway(now, holdRatio) {
+    function updateSway(now) {
         var elapsed = now - swaySegmentStartedAt;
         while (elapsed >= CONFIG.swayMoveDuration) {
-            swayFromAngle = swayToAngle;
-            swayToAngle = swayFromAngle + Math.PI + (Math.random() - 0.5) * (Math.PI / 2);
+            swayFrom.x = swayTo.x;
+            swayFrom.y = swayTo.y;
+            var currentAngle = Math.atan2(swayFrom.y, swayFrom.x);
+            var nextAngle = currentAngle + Math.PI + (Math.random() - 0.5) * (Math.PI / 2);
             swaySegmentStartedAt += CONFIG.swayMoveDuration;
-            initialSwaySegment = false;
+            var nextRadius = getSwayRadius(getHoldRatio(swaySegmentStartedAt));
+            swayTo.x = Math.cos(nextAngle) * nextRadius;
+            swayTo.y = Math.sin(nextAngle) * nextRadius;
             elapsed = now - swaySegmentStartedAt;
         }
 
         var segmentRatio = Math.max(0, Math.min(1, elapsed / CONFIG.swayMoveDuration));
-        var easedRatio = 0.5 - Math.cos(Math.PI * segmentRatio) / 2;
-        var angle = swayFromAngle + (swayToAngle - swayFromAngle) * easedRatio;
-        var radius = getSwayRadius(holdRatio);
-        if (initialSwaySegment) {
-            radius *= easedRatio;
-        }
-        aimOffset.x = Math.cos(angle) * radius;
-        aimOffset.y = Math.sin(angle) * radius;
+        reticleOffset.x = swayFrom.x + (swayTo.x - swayFrom.x) * segmentRatio;
+        reticleOffset.y = swayFrom.y + (swayTo.y - swayFrom.y) * segmentRatio;
     }
 
     function finishGame() {
@@ -338,9 +336,9 @@
             impactX = Math.cos(angle) * distance;
             impactY = Math.sin(angle) * distance;
         } else {
-            impactX = -aimOffset.x / (CONFIG.targetScale * aimScale);
-            impactY = -aimOffset.y / (CONFIG.targetScale * aimScale);
-            hit = Math.sqrt(aimOffset.x * aimOffset.x + aimOffset.y * aimOffset.y) <= CONFIG.hitBoxRadius;
+            impactX = reticleOffset.x;
+            impactY = reticleOffset.y;
+            hit = Math.sqrt(reticleOffset.x * reticleOffset.x + reticleOffset.y * reticleOffset.y) <= CONFIG.hitBoxRadius;
         }
         shots.push({ x: impactX, y: impactY, hit: hit, wild: wild });
         phase = "result";
@@ -392,7 +390,7 @@
             var holdRatio = getHoldRatio(now);
             gauge = holdRatio * 100;
             aimScale = 1 + holdRatio * 0.18;
-            updateSway(now, holdRatio);
+            updateSway(now);
             if (gauge >= 100) {
                 shoot(true);
             }
